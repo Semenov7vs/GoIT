@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -45,6 +44,7 @@ public class ThymeleafTestController extends HttpServlet {
 
         if (timezone != null) {
             timezone = URLDecoder.decode(timezone, "UTF-8");
+            timezone = timezone.replace(" ", "+");
         }
 
         String lastTimezone = null;
@@ -63,17 +63,16 @@ public class ThymeleafTestController extends HttpServlet {
         } else if (timezone == null) {
             timezone = "UTC";
         }
-
         if (!isValidTimezoneFormat(timezone)) {
             timezone = "UTC";
         }
 
-        // Сохраняем timezone в куки
         Cookie timezoneCookie = new Cookie("lastTimezone", URLEncoder.encode(timezone, "UTF-8"));
         resp.addCookie(timezoneCookie);
 
         ZoneOffset zoneOffset;
         if (timezone.startsWith("UTC")) {
+
             int offsetHours = 0;
             if (timezone.length() > 3) {
                 offsetHours = Integer.parseInt(timezone.substring(3).replace("+", ""));
@@ -89,7 +88,6 @@ public class ThymeleafTestController extends HttpServlet {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedCurrentTime = currentTime.format(formatter);
-
         simpleContext.setVariable("currentTime", formattedCurrentTime + " " + timezone);
 
         engine.process("test", simpleContext, resp.getWriter());
