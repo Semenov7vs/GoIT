@@ -1,4 +1,4 @@
-package org.example.module13.model;
+package org.example.module14.model;
 
 import lombok.Data;
 import javax.persistence.*;
