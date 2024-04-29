@@ -1,45 +1,41 @@
 package org.example.dao;
 
-import org.example.model.Planet;
+
+import org.example.model.Client;
 import org.example.service.hibernate.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-public class PlanetDao {
-    private SessionFactory sessionFactory = HibernateUtil.getInstance().getSessionFactory();
+public class ClientDao {
+    private final SessionFactory sessionFactory = HibernateUtil.getInstance().getSessionFactory();
 
-    public void save(Planet planet) {
-        String id = planet.getId();
-        if (!id.matches("^[A-Z]+$")) {
-            throw new IllegalArgumentException("Planet ID must be uppercase.");
-        }
-
+    public void save(Client client) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            session.persist(planet);
+            session.persist(client);
             tx.commit();
         }
     }
 
-    public Planet findById(String id) {
+    public Client findById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            return session.get(Planet.class, id);
+            return session.get(Client.class, id);
         }
     }
 
-    public void update(Planet planet) {
+    public void update(Client client) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            planet = session.merge(planet);
+            client = session.merge(client);
             tx.commit();
         }
     }
 
-    public void delete(Planet planet) {
+    public void delete(Client client) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            session.remove(planet);
+            session.remove(client);
             tx.commit();
         }
     }
